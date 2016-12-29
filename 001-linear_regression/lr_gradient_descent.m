@@ -17,11 +17,14 @@ for iter = 1:num_iters
     % printf("iter = %d; cost = %d\n", iter, lr_compute_cost(X, y, theta))
 
     % theta - is the column vector
-    tmp_theta = theta - alpha * ( 1/m ) * X' * ( X*theta - y ); % ' is matrix transpose
-    theta = tmp_theta;
+    % cost - is a scalar function
+    % grad - is the column vector
+    [cost, grad] = lr_compute_cost(theta, X, y);
+
+    theta = theta - alpha * grad;
 
     % Save the cost J in every iteration    
-    J_hist(iter) = lr_compute_cost(X, y, theta);
+    J_hist(iter) = cost;
 
 end
 

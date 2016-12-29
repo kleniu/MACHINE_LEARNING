@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{amsmath,pgfplots}
+%\usepackage{pgfplots}
+
+
+
+%PREAMBLE
+\author{Robert K.}
+\title{Regularisation notes.}
+\date{December 27, 2016}
+
+
+
+%CONTENT
+\begin{document}
+\maketitle
+\begin{abstract}
+This is just a document with notes regarding Regularisation in finding $\Theta$ values to prevent \textit{overfitting}.
+\end{abstract}
+
+\section{Underfit vs Overfit}
+\textit{Underfit} - (a.k.a "high bias") is the prediction (learned hypothesis function) which does not fit the training or new input data very well. Too simplified hypothesis function. 
+\newline
+\textit{Overfit} - (a.k.a "high variance") is the prediction (learned hypothesis function) which fits well the training data, but fails to generalise to new input data. It can occur when we have too many \textit{features} and small size of training set. 
+\newline
+\newline
+How to address overfitting problem:
+\begin{enumerate}
+	\item Reduce the number of features, which can be done in two ways:
+		\begin{itemize}
+			\item Manually select which features to keep
+			\item Use Model Selection Algorithm to automatically select features to keep
+		\end{itemize}
+	\item Use \textbf{regularisation} where we keep all features, but with different prioryty
+\end{enumerate}
+
+
+\section{Regularisation}
+\textbf{Regularisation} - is the technique of reducing overfitting by keeping all features but reducing the values of $\theta_j$.
+\newline
+It works well wen we have a lot of features and each of them contributes a bit to predicting $y$.
+\newline 
+\newline
+\textit{Properties of regularisation}: 
+\begin{itemize}
+\item if $\theta_j$ is small then more likely we will not overfit. We want to keep $\theta_j$ small.
+\end{itemize}
+To use Regularisation we slightly modify cost function $J(\theta)$
+\begin{equation}
+J(\theta) = \dfrac{1}{2m}\ \left[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2 \right]
+\end{equation}
+If the $\theta_j$ is small, then the cost function $J(\theta)$ will be small too. 
+\newline
+$\lambda$ - is the \textbf{regularisation parameter} It determines how much the costs of our theta parameters are inflated.
+\newline
+\newline
+\textit{Properties of new cost function}: 
+\begin{itemize}
+\item cost will be small if $\theta_j$ is small.
+\item cost will be small for the big \textbf{regularisation parameter} $\lambda$ if $\theta_j$ will be super small
+\item If $\lambda$ is chosen to be too large, then $\theta_1...\theta_n$ will be near zero to make cost small. It may cause underfitting. 
+\item if $\lambda=0$ or is too small then it is similar to case of not using regularisation at all - so we increase a chance of overfitting.
+\end{itemize}
+
+
+\end{document}

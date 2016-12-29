@@ -1,0 +1,523 @@
+\documentclass{article} % this is the document class which will be used to create document
+\usepackage{amsmath}
+\usepackage{pgfplots}
+%PREAMBLE
+\author{Robert K.}
+\title{Logistic Regression notes}
+\date{December 26, 2016}
+
+%CONTENT
+\begin{document}
+\maketitle % it prints the %PREAMBLE information in the PDF
+
+% if new page is required we can write here \newpage
+
+% lets specify abstract
+\begin{abstract}
+This is just a document with notes regarding Logistic Regression. 
+\end{abstract} 
+
+
+
+
+% now we define sections1
+\section{Hypothesis function for logistic regression}\label{sec:section1}
+Hypothesis function in Logistic Regression has a form:
+\begin{equation}
+h_{\Theta}(x^{(i)}) = g(\Theta^Tx^{(i)})
+\end{equation}
+\newline
+where $g()$ is a "Sigmoid Function" (a.k.a "Logistic Function")
+\begin{equation}
+g(z) = \frac{1}{1 + e^{-z}}  
+\end{equation}
+\newline
+where:\\
+$z$ - is scalar value $\Theta^Tx^{(i)}$\\
+$\Theta$ - is the column vector of $\Theta_0$, $\Theta_1$ ... $\Theta_n$ values\\
+$x^{(i)}$ - is the column vector of $x^{(i)}_0=1$, $x^{(i)}_1$ ... $x^{(i)}_n$ values in particular training set $(i)$\\
+\\
+properties of $h_{\Theta}(x)$ - sigmoid function as the logistic regression hypothesis function:\\
+a) $h_{\Theta}(x^{(i)})$ returns the scalar value\\
+b) $0 < h_{\Theta}(x^{(i)}) < 1$\\
+c) if $\Theta^Tx^{(i)} = 0$ then  $h_{\Theta}(x^{(i)}) = 0.5$\\
+d) if $\Theta^Tx^{(i)} \rightarrow \infty$ then $h_{\Theta}(x^{(i)}) = 1$\\
+e) if $\Theta^Tx^{(i)} \rightarrow -\infty$ then $h_{\Theta}(x^{(i)}) = 0$\\ 
+f) $h_{\Theta}(x^{(i)})$ gives as the \textbf{probability} that our output is 1\\
+\\
+\textit{Example:} $h_{\Theta}(x^{(i)}) = 0.9$ gives as the $90\%$ probability that our output is 1 or $10\%$ that the output is 0 for the given $x^{(i)}$ and $\Theta$ column vectors.\\
+\begin{equation}
+h_{\Theta}(x^{(i)}) = P( y^{(i)}=1 | x^{(i)};\Theta )
+\end{equation}
+\begin{equation}
+h_{\Theta}(x^{(i)}) = 1 - P( y^{(i)}=0 | x^{(i)};\Theta )
+\end{equation}
+\begin{equation}
+P( y=1 | x^{(i)};\Theta ) + P( y^{(i)}=0 | x^{(i)};\Theta ) = 1
+\end{equation}
+\\
+\textit{Excercise:} Let's say that we've trained a logistic regression classifier. It means we have the $\Theta$ values. Now, for the given new $x$ input we calculated $h_{\Theta}(x) = 0.3$. What does it mean?\\
+\\
+\textit{Answer:}It means that for given $x$ and trained logistic regression classifier identified by $\Theta$, estimates that the answer is positive with the probability of 30\% and negative with the probability 70\%.    
+\begin{equation*}
+P( y=1 | x;\Theta ) = h_{\Theta}(x) = 0.3
+\end{equation*}
+\begin{equation*}
+P( y=0 | x;\Theta ) = 1 - h_{\Theta}(x) = 1 - 0.3 = 0.7
+\end{equation*}
+
+
+
+% now we define section2
+\section{Decision Boundary}
+With logistic regression classifier we should get discrete answers ($y^{(i)}=0|1$) for the specific $x^{(i)}$ input vector. It means that we have to decide which value of $h_{\Theta}(x^{(i)})$ classifies as positive answer and which value classifies as the negative answer.\\
+\\
+Using Sigmoid Function as the $h_{\Theta}(x^{(i)})$, it seems to be straight forward - since the $h_{\Theta}(x^{(i)})$ is the \textbf{probability} that our output is positive (a.k.a "true", 1, "yes", etc).\\
+\\
+If  $h_{\Theta}(x^{(i)})$ is greater or equal 0.5 then the answer is \textit{positive}, and\\
+If  $h_{\Theta}(x^{(i)})$ is less 0.5 then the answer is \textit{negative}\\
+\\
+\begin{equation}
+h_\Theta(x^{(i)}) \geq 0.5 \rightarrow y^{(i)} = 1
+\end{equation}
+\begin{equation}
+h_\Theta(x^{(i)}) < 0.5 \rightarrow y^{(i)} = 0\\
+\end{equation}
+Let's draw $h_\Theta(x^{(i)})$ function:
+% lets draw the function
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel=$\Theta^Tx^{(i)}$,
+ylabel={$h_{\Theta}(x^{(i)}) = \frac{1}{1 + e^{-\Theta^Tx^{(i)}}}$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=-8,xmax=8,
+ymin=-0.2,ymax=1.2,
+] 
+\addplot[black, mark=none]
+plot[domain=-8:8,samples=40] 
+{1/(1+e^(-x))};
+\addplot[mark=none, black, dashed] coordinates {(-8,1) (8,1)}; 
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+the following equations are true\\
+\begin{equation}
+\Theta^Tx^{(i)} \geq 0 \rightarrow y^{(i)} = 1
+\end{equation}
+\begin{equation}
+\Theta^Tx^{(i)} < 0 \rightarrow y^{(i)} = 0\\
+\end{equation}
+\\  
+\textit{Conclusion:} We do not have to calculate $h_\Theta(x^{(i)})$ to figure out if the result of our logistic regression classifier will be positive or negative. We just need to calculate $\Theta^Tx^{(i)}$, if it is less the $0$ then the result is negative, otherwise it's positive.\\
+\\
+\textit{Example:} Let's say that we have classifier identified by  $\Theta = \begin{bmatrix} 3 \\ -2 \\ 0\end{bmatrix} $.\\
+The classifier will return positive answer ($y=1$) if $\Theta^Tx^{(i)} = 3x^{(i)}_0 - 2x^{(i)}_1 + 0x^{(i)}_2 \geq 0$ (where $x^{(i)}_0 = 1$).
+So it give us $x^{(i)}_1 \leq 1.5$. So, our decision boundary is a straight vertical line placed on the graph where $x^{(i)}_1=1.5$, 
+and everything to the left of that denotes positive result ($y^{(i)} = 1$), while everything to the right denotes negative result ($y^{(i)} = 0$).
+% lets draw it
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel=$x^{(i)}_1$,
+ylabel={$x^{(i)}_2$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=-0.5,xmax=3,
+ymin=-2,ymax=2,
+] 
+\addplot[mark=none, black] coordinates {(1.5,-2) (1.5,2)};
+\node [above] at (axis cs:  0.7,  1) {here $y^{(i)}=1$}; 
+\node [above] at (axis cs:  2.3,  1) {here $y^{(i)}=0$}; 
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+
+
+% now we define section3
+\section{Cost function}
+\subsection{Linear regression cost function cannot be used}
+We cannot use the same cost function that we use for linear regression 
+\begin{equation*}
+J(\Theta) = \frac{1}{2m}\sum_{i=1}^{m}(h_\theta(x^{(i)})-y^{(i)})^2
+\end{equation*}
+because the Logistic Function $h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$ will cause the output $J(\Theta)$ to be wavy. \\
+\begin{equation}
+J(\Theta) = \frac{1}{2m}\sum_{i=1}^{m}(\frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}-y^{(i)})^2
+\end{equation}
+See the example figure below, where we have two local minimas next to global minimum. Formal term for this kind of function is \textbf{non-convex} function. Which is useless for gradient descend algorithm.  
+
+% lets draw the function
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel=$x$,
+ylabel={$y$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=-20,xmax=20,
+] 
+\addplot[black, mark=none]
+plot[domain=-20:20,samples=100] 
+{((1/(1+e^(-x+1)))+1)^2+((1/(1+e^(x+1)))+1)^2+((1/(1+e^(-x+6)))+1)^2+((1/(1+e^(x-3)))+1)^2+((1/(1+e^(-x-6)))+1)^2+((1/(1+e^(x+8)))+1)^2};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+That's because the $h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$ is nonlinear. 
+
+% next subsection
+\subsection{Logistic regression cost function}
+We are looking for function which is \textbf{convex} function - has one minimum. Let it be arithmetic mean of costs for particular training set {(i=1, 2 .. m)}.
+\begin{equation}
+J(\Theta) = \frac{1}{m}\sum_{i=1}^{m}Cost(h_{\Theta}(x^{(i)}),y^{(i)})
+\end{equation}
+where single cost for particular training set {(i)} is:
+\begin{equation}
+Cost(h_{\Theta}(x^{(i)}),y^{(i)})=
+\begin{cases}
+-log(h_{\Theta}(x^{(i)})) & \text{if }y^{(i)}=1\\ 
+-log(1-h_{\Theta}(x^{(i)})) & \text{if }y^{(i)}=0
+\end{cases}
+\end{equation}
+
+% lets draw the function y=1
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel={$h_{\Theta}(x^{(i)})$},
+ylabel={$Cost(h_{\Theta}(x^{(i)}),y^{(i)})$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=0,xmax=1,
+ymin=0,ymax=4
+] 
+\addplot[black, mark=none]
+plot[domain=0:1,samples=500] 
+{-log10(x)};
+\node [above] at (axis cs:  0.6,  3) {$y=1$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+Note that $h_{\Theta}(x^{(i)})$ is the probability that y=1 for the given $x^{(i)}$ and $\Theta$, other words:
+\begin{equation}
+h_{\Theta}(x^{(i)}) = P( y=1 | x^{(i)};\Theta )
+\end{equation}
+if probability that y=1 for the given $x^{(i)}$,$\Theta$ is 1, then $Cost(h_{\Theta}(x^{(i)}),y^{(i)})$ is 0\\
+if probability that y=1 for the given $x^{(i)}$,$\Theta$ is 0, then $Cost(h_{\Theta}(x^{(i)}),y^{(i)})$ is $\infty$ 
+
+% lets draw the function y=0
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel={$h_{\Theta}(x^{(i)})$},
+ylabel={$Cost(h_{\Theta}(x^{(i)}),y^{(i)})$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=0,xmax=1,
+ymin=0,ymax=4
+] 
+\addplot[black, mark=none]
+plot[domain=0:1,samples=500] 
+{-log10(1-x)};
+\node [above] at (axis cs:  0.6,  3) {$y=0$};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+Note that $1-h_{\Theta}(x^{(i)})$ is the probability that y=0 for the given $x^{(i)}$ and $\Theta$, other words:
+\begin{equation}
+1-h_{\Theta}(x^{(i)}) = P( y=0 | x^{(i)};\Theta )
+\end{equation}
+if $h_{\Theta}(x^{(i)}) = 1$ then there is no chance that y=0 - $Cost(h_{\Theta}(x^{(i)}),y^{(i)})$ is $\infty$\\
+if $h_{\Theta}(x^{(i)}) = 0$ then there is 100\% chance that y=0 - $Cost(h_{\Theta}(x^{(i)}),y^{(i)})$ is 0\\
+\\
+We can simplify the equation. So \textbf{cost function for logistic regression} can be written with equation:
+\begin{equation}
+J(\Theta) = - \frac{1}{m}\sum_{i=1}^{m}[y^{(i)}log(h_{\Theta}(x^{(i)}))+(1-y^{(i)})log(1-h_{\Theta}(x^{(i)}))] 
+\end{equation}
+where:\\
+\\
+$y\in\{1,2\}$ \\
+\\
+$h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$\\
+\\
+\textbf{Derivative} of the cost function for logistic regression looks like that (see: Appendix \ref{sec:derivatives}):
+\newline
+\begin{equation}
+\frac{\delta}{\delta\Theta_j}J(\Theta) = \frac{1}{m} \sum_{i=1}^m (h_\Theta(x^{(i)}) - y^{(i)}) x_j^{(i)}
+\end{equation}
+where:\\
+\\
+$y\in\{1,2\}$ \\
+\\
+$h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$\\
+\\
+
+\subsection{Vectorised form of cost function}
+Let's assume that we have $m$ training elements. 
+\newline
+Single training element is represented by column vector $x^{(i)}$.
+\newline 
+Each training element $x^{(i)}=\begin{bmatrix}x^{(i)}_0\\ x^{(i)}_1\\ \vdots \\ x^{(i)}_n\end{bmatrix}$ has $n+1$ features.
+\newline
+\newline
+Let's insert all training input values (a.k.a. independent) into matrix $X$ and dependant values ($y^{(i)}$) to column vector $y$.
+\begin{equation*}
+X = 
+\begin{bmatrix} 
+(x^{(1)})^T \\ 
+(x^{(2)})^T \\
+\vdots \\
+(x^{(m)})^T \\
+\end{bmatrix} =
+\begin{bmatrix} 
+x^{(1)}_0 	& x^{(1)}_1 	& \dots 	& x^{(1)}_n \\ 
+x^{(2)}_0 	& x^{(2)}_1 	& \dots 	& x^{(2)}_n \\
+\vdots 	& \vdots 		& \ddots	& \vdots \\
+x^{(m)}_0 	& x^{(m)}_1 	& \dots 	& x^{(m)}_n \\
+\end{bmatrix} ; 
+y = 
+\begin{bmatrix} 
+y^{(1)} \\ 
+y^{(2)} \\
+\vdots \\
+y^{(m)} \\
+\end{bmatrix}
+\end{equation*}
+since $x^{(i)}_0 = 1$ for every $i$
+\begin{equation*}
+X = 
+\begin{bmatrix} 
+(x^{(1)})^T \\ 
+(x^{(2)})^T \\
+\vdots \\
+(x^{(m)})^T \\
+\end{bmatrix} =
+\begin{bmatrix} 
+1 	& x^{(1)}_1	& x^{(1)}_2 	& \dots 	& x^{(1)}_n \\ 
+1 	& x^{(2)}_1 	& x^{(2)}_2	& \dots 	& x^{(2)}_n \\
+\vdots 	& \vdots 	& \vdots		& \ddots	& \vdots \\
+1 	& x^{(m)}_1 	& x^{(m)}_2	& \dots 	& x^{(m)}_n \\
+\end{bmatrix} 
+\end{equation*}
+
+\begin{equation*}
+X \Theta = 
+\begin{bmatrix} 
+1 	& x^{(1)}_1	& x^{(1)}_2 	& \dots 	& x^{(1)}_n \\ 
+1 	& x^{(2)}_1 	& x^{(2)}_2	& \dots 	& x^{(2)}_n \\
+\vdots 	& \vdots 	& \vdots		& \ddots	& \vdots \\
+1 	& x^{(m)}_1 	& x^{(m)}_2	& \dots 	& x^{(m)}_n \\
+\end{bmatrix}  
+\begin{bmatrix} 
+\theta_0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n \\
+\end{bmatrix} 
+= 
+\begin{bmatrix} 
+\theta_0 + x^{(1)}_1*\theta_1 + x^{(1)}_2*\theta_2 + \dots 	+ x^{(1)}_n*\theta_n \\ 
+\theta_0 + x^{(2)}_1*\theta_1 + x^{(2)}_2*\theta_2 + \dots 	+ x^{(2)}_n*\theta_n \\
+\vdots \\
+\theta_0 + x^{(m)}_1*\theta_1 + x^{(m)}_2*\theta_2 + \dots 	+ x^{(m)}_n*\theta_n\\
+\end{bmatrix}  
+\end{equation*}
+in result we have
+
+\begin{equation*}
+X \Theta = 
+\begin{bmatrix} 
+\Theta^Tx^{(1)} \\ 
+\Theta^Tx^{(2)} \\
+\vdots \\
+\Theta^Tx^{(m)}\\
+\end{bmatrix}  
+\end{equation*}
+so, if we want to vectorise following equation:
+\begin{equation}
+J(\Theta) = - \frac{1}{m}
+\left[
+\sum_{i=1}^{m}y^{(i)}log(h_{\Theta}(x^{(i)}))+
+\sum_{i=1}^{m}(1-y^{(i)})log(1-h_{\Theta}(x^{(i)})) 
+\right]
+\end{equation}
+where:
+\begin{equation*}
+h_{\Theta}(x^{(i)}) = g(\Theta^Tx^{(i)})
+\end{equation*}
+\begin{equation*} 
+g(z) = \frac{1}{1 + e^{-z}}  
+\end{equation*}
+\newline
+so \textbf{final vectorised form of cost function for logistic regression}:
+\begin{equation}
+J(\Theta) = - \frac{1}{m}\cdot
+\left[y^Tlog(g(X\Theta))+(1-y)^Tlog(1-g(X\Theta))\right]
+\end{equation} 
+where:
+\begin{equation*} 
+g(X\Theta) = 
+\begin{bmatrix} 
+g(\Theta^Tx^{(1)}) \\ 
+g(\Theta^Tx^{(2)}) \\
+\vdots \\
+g(\Theta^Tx^{(m)})\\
+\end{bmatrix}
+\end{equation*} 
+$log(g(X\Theta))$ - is a column vector of size $m$. \textit{Log} function is done on every element of $g(X\Theta)$ column vector.  
+\subsection{Vectorised derivative of the cost function} 
+As we know:
+\begin{equation*}
+X \Theta = 
+\begin{bmatrix} 
+\Theta^Tx^{(1)} \\ 
+\Theta^Tx^{(2)} \\
+\vdots \\
+\Theta^Tx^{(m)}\\
+\end{bmatrix}  
+\end{equation*}
+so, if we want to vectorise following equation:
+\begin{equation}
+\frac{\delta}{\delta\Theta_j}J(\Theta) = \frac{1}{m} \sum_{i=1}^m x_j^{(i)}(h_\Theta(x^{(i)}) - y^{(i)}) 
+\end{equation}
+where:
+\begin{equation*}
+h_{\Theta}(x^{(i)}) = g(\Theta^Tx^{(i)})
+\end{equation*}
+\begin{equation*} 
+g(z) = \frac{1}{1 + e^{-z}}  
+\end{equation*}
+so \textbf{final vectorised form of cost function derivative for logistic regression}:
+\begin{equation}
+\nabla J(\Theta) = 
+\begin{bmatrix} 
+\frac{\delta}{\delta\Theta_0}J(\Theta)\\ 
+\frac{\delta}{\delta\Theta_1}J(\Theta) \\
+\vdots \\
+\frac{\delta}{\delta\Theta_n}J(\Theta)\\
+\end{bmatrix}  
+= \frac{1}{m}\cdot
+\left[X^T(g(X\Theta)-y)\right]
+\end{equation}
+\newline
+\newline
+
+% now we define section4
+\section{Gradient descent algorithm}
+Simplified gradient descent algorithm\\
+\\
+\textit{repeat until convergence} \{
+\begin{tabbing}
+\hspace{1cm}$\Theta_j:=  \Theta_j  -  \alpha  \frac{\delta}{\delta\Theta_j}J(\Theta)$
+\end{tabbing}
+\}\\
+\\
+\begin{equation}
+\frac{\delta}{\delta\Theta_j}J(\Theta) = \frac{1}{m} \sum_{i=1}^m (h_\Theta(x^{(i)}) - y^{(i)}) x_j^{(i)}
+\end{equation}
+\\
+the equation above is exactly the same as for linear regression gradient descent   
+
+\newpage
+\section{Appendix}
+
+\appendix
+% Appendix 1
+\section{Normal Equations}
+Using Normal Equations for logistic regression is not a good idea.
+\textit{Example} For training set $x = \begin{bmatrix} 1,1 \\ 1,2 \\ 1,3 \\ 1,4 \\ 1,5 \\ 1,6 \end{bmatrix} $ ; $y = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \\ 1 \\ 1 \end{bmatrix} $ according to Normal Equations\\
+optimal $\Theta$ is $\Theta_{optimal} = (x^Tx)^{-1}x^Ty = \begin{bmatrix} -0.4 \\ 0.25714 \end{bmatrix} $, in the graph it looks like that:
+
+% lets draw it
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[ 
+xlabel=$x_1$,
+ylabel={$y$},
+axis lines=middle,
+every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west,},
+every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south,},
+xmin=-1,xmax=6,
+ymin=-1,ymax=1.5,
+] 
+\addplot [only marks, mark=*] table {
+1  0
+2  0
+3  0
+4   1
+5   1
+6   1
+};
+\addplot[black, mark=none]
+plot[domain=-1:6,samples=40] 
+{-0.4+0.25714*x};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+% Appendix 2
+\section{Derivatives}\label{sec:derivatives}
+Derivative of sigmoid function (it will be used while finding partial derivative of $J(\Theta))$:\\
+\\
+\begin{equation*}
+\sigma(x)'=\left(\frac{1}{1+e^{-x}}\right)'=\frac{-(1+e^{-x})'}{(1+e^{-x})^2}=\frac{-1'-(e^{-x})'}{(1+e^{-x})^2}=\frac{0-(-x)'(e^{-x})}{(1+e^{-x})^2}=\
+\end{equation*}
+\begin{equation*}
+=\frac{-(-1)(e^{-x})}{(1+e^{-x})^2}=\frac{e^{-x}}{(1+e^{-x})^2} =\left(\frac{1}{1+e^{-x}}\right)\left(\frac{e^{-x}}{1+e^{-x}}\right)=
+\end{equation*}
+\begin{equation*}
+=\sigma(x)\left(\frac{+1-1 + e^{-x}}{1+e^{-x}}\right)=\sigma(x)\left(\frac{1 + e^{-x}}{1+e^{-x}} - \frac{1}{1+e^{-x}}\right)=\sigma(x)(1 - \sigma(x))
+\end{equation*}
+\\
+partial derivative of $J(\Theta))$:
+\\
+\begin{equation*}
+\frac{\partial}{\partial \theta_j} J(\theta) = \frac{\partial}{\partial \theta_j} \frac{-1}{m}\sum_{i=1}^m \left [ y^{(i)} log (h_\theta(x^{(i)})) + (1-y^{(i)}) log (1 - h_\theta(x^{(i)})) \right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     y^{(i)} \frac{\partial}{\partial \theta_j} log (h_\theta(x^{(i)}))   + (1-y^{(i)}) \frac{\partial}{\partial \theta_j} log (1 - h_\theta(x^{(i)}))\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     \frac{y^{(i)} \frac{\partial}{\partial \theta_j} h_\theta(x^{(i)})}{h_\theta(x^{(i)})}   + \frac{(1-y^{(i)})\frac{\partial}{\partial \theta_j} (1 - h_\theta(x^{(i)}))}{1 - h_\theta(x^{(i)})}\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     \frac{y^{(i)} \frac{\partial}{\partial \theta_j} \sigma(\theta^T x^{(i)})}{h_\theta(x^{(i)})}   + \frac{(1-y^{(i)})\frac{\partial}{\partial \theta_j} (1 - \sigma(\theta^T x^{(i)}))}{1 - h_\theta(x^{(i)})}\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     \frac{y^{(i)} \sigma(\theta^T x^{(i)}) (1 - \sigma(\theta^T x^{(i)})) \frac{\partial}{\partial \theta_j} \theta^T x^{(i)}}{h_\theta(x^{(i)})}   + \frac{- (1-y^{(i)}) \sigma(\theta^T x^{(i)}) (1 - \sigma(\theta^T x^{(i)})) \frac{\partial}{\partial \theta_j} \theta^T x^{(i)}}{1 - h_\theta(x^{(i)})}\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     \frac{y^{(i)} h_\theta(x^{(i)}) (1 - h_\theta(x^{(i)})) \frac{\partial}{\partial \theta_j} \theta^T x^{(i)}}{h_\theta(x^{(i)})}   - \frac{(1-y^{(i)}) h_\theta(x^{(i)}) (1 - h_\theta(x^{(i)})) \frac{\partial}{\partial \theta_j} \theta^T x^{(i)}}{1 - h_\theta(x^{(i)})}\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     y^{(i)} (1 - h_\theta(x^{(i)})) x^{(i)}_j - (1-y^{(i)}) h_\theta(x^{(i)}) x^{(i)}_j\right ] =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     y^{(i)} (1 - h_\theta(x^{(i)})) - (1-y^{(i)}) h_\theta(x^{(i)}) \right ] x^{(i)}_j =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [     y^{(i)} - y^{(i)} h_\theta(x^{(i)}) - h_\theta(x^{(i)}) + y^{(i)} h_\theta(x^{(i)}) \right ] x^{(i)}_j =
+\end{equation*}
+\begin{equation*}
+= - \frac{1}{m}\sum_{i=1}^m \left [ y^{(i)} - h_\theta(x^{(i)}) \right ] x^{(i)}_j =
+\end{equation*}
+\begin{equation*}
+= \frac{1}{m}\sum_{i=1}^m \left [ h_\theta(x^{(i)}) - y^{(i)} \right ] x^{(i)}_j
+\end{equation*}
+
+
+%\end{appendices}
+
+
+
+
+\end{document}
