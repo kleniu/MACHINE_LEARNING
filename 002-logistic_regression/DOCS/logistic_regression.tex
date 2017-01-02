@@ -245,7 +245,7 @@ J(\Theta) = - \frac{1}{m}\sum_{i=1}^{m}[y^{(i)}log(h_{\Theta}(x^{(i)}))+(1-y^{(i
 \end{equation}
 where:\\
 \\
-$y\in\{1,2\}$ \\
+$y\in\{0,1\}$ \\
 \\
 $h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$\\
 \\
@@ -256,7 +256,7 @@ $h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$\\
 \end{equation}
 where:\\
 \\
-$y\in\{1,2\}$ \\
+$y\in\{0,1\}$ \\
 \\
 $h_\Theta(x^{(i)}) = \frac{1}{1+e^{-{\Theta^Tx^{(i)}}}}$\\
 \\
@@ -359,10 +359,12 @@ g(z) = \frac{1}{1 + e^{-z}}
 \end{equation*}
 \newline
 so \textbf{final vectorised form of cost function for logistic regression}:
+\color{red}
 \begin{equation}
 J(\Theta) = - \frac{1}{m}\cdot
 \left[y^Tlog(g(X\Theta))+(1-y)^Tlog(1-g(X\Theta))\right]
 \end{equation} 
+\color{black}
 where:
 \begin{equation*} 
 g(X\Theta) = 
@@ -397,6 +399,7 @@ h_{\Theta}(x^{(i)}) = g(\Theta^Tx^{(i)})
 g(z) = \frac{1}{1 + e^{-z}}  
 \end{equation*}
 so \textbf{final vectorised form of cost function derivative for logistic regression}:
+\color{red}
 \begin{equation}
 \nabla J(\Theta) = 
 \begin{bmatrix} 
@@ -408,6 +411,7 @@ so \textbf{final vectorised form of cost function derivative for logistic regres
 = \frac{1}{m}\cdot
 \left[X^T(g(X\Theta)-y)\right]
 \end{equation}
+\color{black}
 \newline
 \newline
 

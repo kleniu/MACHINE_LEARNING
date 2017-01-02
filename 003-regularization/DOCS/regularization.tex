@@ -45,10 +45,18 @@ It works well wen we have a lot of features and each of them contributes a bit t
 \begin{itemize}
 \item if $\theta_j$ is small then more likely we will not overfit. We want to keep $\theta_j$ small.
 \end{itemize}
+
+
+\subsection{Regularisation of linear regression}
+\subsubsection{Cost function and gradient}
 To use Regularisation we slightly modify cost function $J(\theta)$
 \begin{equation}
-J(\theta) = \dfrac{1}{2m}\ \left[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2 \right]
+J(\theta) = \dfrac{1}{2m}\ \left[ \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 + \lambda\ \sum_{j=1}^n \theta_j^2 \right] =
 \end{equation}
+\begin{equation*}
+= \left[ \dfrac{1}{2m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2\right] + \left[ \dfrac{\lambda}{2m} \sum_{j=1}^n \theta_j^2 \right] 
+\end{equation*}
+
 If the $\theta_j$ is small, then the cost function $J(\theta)$ will be small too. 
 \newline
 $\lambda$ - is the \textbf{regularisation parameter} It determines how much the costs of our theta parameters are inflated.
@@ -61,6 +69,181 @@ $\lambda$ - is the \textbf{regularisation parameter} It determines how much the 
 \item If $\lambda$ is chosen to be too large, then $\theta_1...\theta_n$ will be near zero to make cost small. It may cause underfitting. 
 \item if $\lambda=0$ or is too small then it is similar to case of not using regularisation at all - so we increase a chance of overfitting.
 \end{itemize}
+Gradient of regularised cost function $\frac{\delta}{\delta \theta_j}J(\theta)$
+\begin{equation}
+\frac{\delta}{\delta \theta_j}J(\theta) =\frac{\delta}{\delta \theta_j}\left[ \dfrac{1}{2m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})^2 \right] + \frac{\delta}{\delta \theta_j} \left[ \dfrac{\lambda}{2m} \sum_{j=1}^n \theta_j^2 \right]
+\end{equation}
+where:
+\begin{equation*}
+h_\theta(x^{(i)})=\theta^Tx^{(i)}=\sum_{j=0}^n\theta_jx^{(i)}_j \text{ with } x^{(i)}_0 = 1
+\end{equation*}
+so gradient of cost function for linear regresion:
+\begin{equation}
+\frac{\delta}{\delta \theta_j} J(\theta) = \dfrac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x^{(i)}_j \text{ for } j=0
+\end{equation}
+\begin{equation}
+\frac{\delta}{\delta \theta_j} J(\theta) = \dfrac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)})x^{(i)}_j + \dfrac{\lambda}{m}\theta_j \text{ for } j\ge0
+\end{equation}
+The \textbf{vectorised form of cost function} 
+\newline
+\color{red}
+\begin{equation}
+J(\Theta) = J\left( \begin{bmatrix} 
+\theta_0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix} \right) = \frac{1}{2m} ( X\Theta - y )^T ( X\Theta - y ) +  \frac{\lambda}{2m}
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}^T
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}
+\end{equation}\\
+\color{black}
+The \textbf{vectorised form of cost function derivative}
+\color{red}
+\begin{equation}
+\nabla J(\Theta) = 
+\begin{bmatrix} 
+\frac{\delta}{\delta\Theta_0}J(\Theta)\\ 
+\frac{\delta}{\delta\Theta_1}J(\Theta) \\
+\vdots \\
+\frac{\delta}{\delta\Theta_n}J(\Theta)\\
+\end{bmatrix}  
+= \frac{1}{m}
+\left[X^T(X\Theta-y)\right]
++ \frac{\lambda}{m}
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}
+\end{equation}
+\color{black}
+\subsubsection{Regularised normal equations}
+Regularisation using the non-iterative normal equation.
+\color{blue}
+\begin{equation}
+\Theta = 
+\begin{bmatrix} 
+\theta_0\\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix} = 
+\theta = \left( X^TX + \lambda 
+\begin{bmatrix}
+0 & 0 & 0 & \hdots & 0 \\
+0 & 1 & 0 & \hdots & 0 \\
+0 & 0 & 1 & \hdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & 0 \\
+0 & 0 & 0 & \hdots & 1 \\
+\end{bmatrix}
+ \right)^{-1} X^Ty
+\end{equation}
+\color{black}
 
+\subsection{Regularisation of logistic regression}
+\subsubsection{Cost function and gradient}
+Regularised \textbf{cost function} has a form
+\begin{equation}
+J(\theta) = - \frac{1}{m}\sum_{i=1}^{m}[y^{(i)}log(h_{\theta}(x^{(i)}))+(1-y^{(i)})log(1-h_{\theta}(x^{(i)}))] + \frac{\lambda}{2m}\sum_{j=1}^n \theta_j^2 
+\end{equation}
+where:\\
+\\
+$y\in\{0,1\}$ \\
+\\
+$h_\theta(x^{(i)}) = \frac{1}{1+e^{-{\theta^Tx^{(i)}}}}$\\
+\newline
+\textbf{Derivative} of the cost function for logistic regression looks like that:\\
+\begin{equation}
+\frac{\delta}{\delta\theta_j}J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)}) x_j^{(i)} \text{ for } j=0
+\end{equation}
+\begin{equation}
+\frac{\delta}{\delta\theta_j}J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_\theta(x^{(i)}) - y^{(i)}) x_j^{(i)} + \dfrac{\lambda}{m}\theta_j \text{ for } j\ge0
+\end{equation}
+where:\\
+\\
+$y\in\{0,1\}$ \\
+\\
+$h_\theta(x^{(i)}) = \frac{1}{1+e^{-{\theta^Tx^{(i)}}}}$\\
+\newline
+The \textbf{vectorised form of cost function} 
+\newline
+\color{red}
+\begin{equation}
+J(\Theta) =  J\left( \begin{bmatrix} 
+\theta_0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix} \right) = - \frac{1}{m} \left[ y^T log(g(X\Theta)) + (1-y)^T log(1-g(X\Theta)) \right] +  \frac{\lambda}{2m}
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}^T
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}
+\end{equation}\\
+\color{black}
+where:
+\begin{equation*} 
+g(X\Theta) = 
+\begin{bmatrix} 
+g(\Theta^Tx^{(1)}) \\ 
+g(\Theta^Tx^{(2)}) \\
+\vdots \\
+g(\Theta^Tx^{(m)})\\
+\end{bmatrix}
+\end{equation*} 
+$log(g(X\Theta))$ - is a column vector of size $m$. \textit{Log} function is done on every element of $g(X\Theta)$ column vector.   
+\\
+\\
+The \textbf{vectorised form of cost function derivative}
+\color{red}
+\begin{equation}
+\nabla J(\Theta) = 
+\begin{bmatrix} 
+\frac{\delta}{\delta\Theta_0}J(\Theta)\\ 
+\frac{\delta}{\delta\Theta_1}J(\Theta) \\
+\vdots \\
+\frac{\delta}{\delta\Theta_n}J(\Theta)\\
+\end{bmatrix}  
+= \frac{1}{m}
+\left[X^T(g(X\Theta)-y)\right]
++ \frac{\lambda}{m}
+\begin{bmatrix} 
+0 \\ 
+\theta_1 \\
+\vdots \\
+\theta_n\\
+\end{bmatrix}
+\end{equation}
+\color{black}
+where:
+\begin{equation*} 
+g(X\Theta) = 
+\begin{bmatrix} 
+g(\Theta^Tx^{(1)}) \\ 
+g(\Theta^Tx^{(2)}) \\
+\vdots \\
+g(\Theta^Tx^{(m)})\\
+\end{bmatrix}
+\end{equation*} 
 
 \end{document}

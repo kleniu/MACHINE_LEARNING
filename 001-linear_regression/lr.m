@@ -59,7 +59,7 @@ num_iters = 400; % number of iterations for gradient descent
 
 [m, n] = size(X);
 
-% normalize X
+% normalize X - MUST be run BEFORE adding 1s a x0
 [Xnorm, mu, sigma] = featureNormalize(X);
 % add 1's as x0
 Xnorm = [ ones(m,1) Xnorm ];
@@ -71,6 +71,7 @@ theta = zeros(n+1, 1);
 
 fprintf(" tmpTheta = [%d %d]\n J = %d\n", [theta], lr_compute_cost(theta, Xnorm, y));
 
+% mu and sigma must be calculated by featureNormalize(X) BEFORE adding 1s as x0 
 realTheta = calculateRealTheta(theta, Xnorm, mu, sigma);
 theta = realTheta;
 

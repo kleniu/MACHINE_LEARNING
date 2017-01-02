@@ -46,6 +46,8 @@ theta = zeros(n+1, 1);
 alpha = 20; % learning spead
 num_iters = 1000; % number of iterations for gradient descent
 [theta, J_hist] = lor_gradient_descent(Xnorm, y, theta, alpha, num_iters);
+
+% IMPORTANT mu and sigma must be calculated by featureNormalize(X) BEFORE adding 1s as x0
 realTheta = calculateRealTheta(theta, Xnorm, mu, sigma);
 theta = realTheta;
 
